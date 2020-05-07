@@ -180,11 +180,9 @@ class MiqAeClass < ApplicationRecord
   end
 
   def set_relative_path
-    return if ae_namespace.blank?
-
-    self.domain_id ||= domain&.id || ae_namespace.domain_id
-    self.domain_id ||= ae_namespace.id if ae_namespace.root?
-    self.relative_path = [ae_namespace.relative_path, name].compact.join("/") if name_changed? || relative_path.nil?
+    self.domain_id ||= domain&.id || ae_namespace&.domain_id
+    self.domain_id ||= ae_namespace.id if ae_namespace&.root?
+    self.relative_path = [ae_namespace.relative_path, name].compact.join("/") if (name_changed? || relative_path.nil?) && ae_namespace
   end
 
   def set_children_relative_path
